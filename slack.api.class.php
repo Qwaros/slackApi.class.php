@@ -47,7 +47,7 @@ class slackApi
 
         curl_close($ch);
 
-        return $this->request_status == 200 ? json_decode($this->request_response) : false;
+        return $this->request_status == 200 ? json_decode($this->request_response, true) : false;
     }
 
     /**
@@ -68,7 +68,7 @@ class slackApi
 
         curl_close($ch);
 
-        return $this->request_status == 200 ? json_decode($this->request_response) : false;
+        return $this->request_status == 200 ? json_decode($this->request_response, true) : false;
     }
 
     /**
