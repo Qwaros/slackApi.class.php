@@ -84,7 +84,7 @@ class slackApi
      * @param string $app_id
      * @param string $request_id
      * @param string $team_id
-     * @return bool
+     * @return bool|array
      */
     public function adminAppsApprove($app_id, $request_id = "", $team_id = "")
     {
@@ -95,7 +95,7 @@ class slackApi
      * @param string $app_id
      * @param string $request_id
      * @param string $team_id
-     * @return bool
+     * @return bool|array
      */
     public function adminAppsRestrict($app_id, $request_id = "", $team_id = "")
     {
