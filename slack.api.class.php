@@ -88,14 +88,7 @@ class slackApi
      */
     public function adminAppsApprove($app_id, $request_id = "", $team_id = "")
     {
-        self::sendPostRequest("admin.apps.approve", array("token" => $this->token, "app_id" => $app_id, "request_id" => $request_id, "team_id" => $team_id));
-        $json = json_decode($this->request_response);
-        if ($json->ok === true) {
-            return true;
-        } else {
-            $this->error = $json->error;
-            return false;
-        }
+        return self::sendPostRequest("admin.apps.approve", array("token" => $this->token, "app_id" => $app_id, "request_id" => $request_id, "team_id" => $team_id));
     }
 
     /**
@@ -106,14 +99,7 @@ class slackApi
      */
     public function adminAppsRestrict($app_id, $request_id = "", $team_id = "")
     {
-        self::sendPostRequest("admin.apps.restrict", array("token" => $this->token, "app_id" => $app_id, "request_id" => $request_id, "team_id" => $team_id));
-        $json = json_decode($this->request_response);
-        if ($json->ok === true) {
-            return true;
-        } else {
-            $this->error = $json->error;
-            return false;
-        }
+        return self::sendPostRequest("admin.apps.restrict", array("token" => $this->token, "app_id" => $app_id, "request_id" => $request_id, "team_id" => $team_id));
     }
 
     /**
