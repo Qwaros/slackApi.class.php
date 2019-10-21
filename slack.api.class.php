@@ -23,33 +23,6 @@ class slackApi
     protected $error;
 
     /**
-     * slackApi constructor.
-     * @param string $token
-     */
-    public function __construct($token)
-    {
-        $this->token = $token;
-    }
-
-    /**
-     * @param string $app_id
-     * @param string $request_id
-     * @param string $team_id
-     * @return bool
-     */
-    public function adminAppsApprove($app_id, $request_id = "", $team_id = "")
-    {
-        self::sendPostRequest("admin.apps.approve", array("token" => $this->token, "app_id" => $app_id, "request_id" => $request_id, "team_id" => $team_id));
-        $json = json_decode($this->request_response);
-        if ($json->ok === true) {
-            return true;
-        } else {
-            $this->error = $json->error;
-            return false;
-        }
-    }
-
-    /**
      * @param string $method
      * @param array $data
      * @return bool|array
@@ -75,6 +48,54 @@ class slackApi
         curl_close($ch);
 
         return $this->request_status == 200 ? json_decode($this->request_response) : false;
+    }
+
+    /**
+     * @param string $method
+     * @param array $data
+     * @return bool|array
+     */
+    private function sendGetRequest($method, $data = array())
+    {
+        $ch = curl_init("https://slack.com/api/{$method}?" . http_build_query($data, '', '&'));
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+
+        $this->request_response = curl_exec($ch);
+        $this->request_status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+
+        curl_close($ch);
+
+        return $this->request_status == 200 ? json_decode($this->request_response) : false;
+    }
+
+    /**
+     * slackApi constructor.
+     * @param string $token
+     */
+    public function __construct($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @param string $app_id
+     * @param string $request_id
+     * @param string $team_id
+     * @return bool
+     */
+    public function adminAppsApprove($app_id, $request_id = "", $team_id = "")
+    {
+        self::sendPostRequest("admin.apps.approve", array("token" => $this->token, "app_id" => $app_id, "request_id" => $request_id, "team_id" => $team_id));
+        $json = json_decode($this->request_response);
+        if ($json->ok === true) {
+            return true;
+        } else {
+            $this->error = $json->error;
+            return false;
+        }
     }
 
     /**
@@ -104,27 +125,6 @@ class slackApi
     public function adminAppsRequestsList($limit = 100, $cursor = "", $team_id = "")
     {
         return self::sendGetRequest("admin.apps.requests.list", array("token" => $this->token, "limit" => $limit, "cursor" => $cursor, "team_id" => $team_id));
-    }
-
-    /**
-     * @param string $method
-     * @param array $data
-     * @return bool|array
-     */
-    private function sendGetRequest($method, $data = array())
-    {
-        $ch = curl_init("https://slack.com/api/{$method}?" . http_build_query($data, '', '&'));
-
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-
-        $this->request_response = curl_exec($ch);
-        $this->request_status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-
-        curl_close($ch);
-
-        return $this->request_status == 200 ? json_decode($this->request_response) : false;
     }
 
     /**
@@ -862,14 +862,12 @@ class slackApi
      * @param string $external_url
      * @param string $title
      * @param string $filetype
-     * @param string $indexable_file_contents
-     * @param string $preview_image
      * @return bool|array
      */
-    public function filesRemoteAdd($external_id, $external_url, $title, $filetype = "", $indexable_file_contents = "", $preview_image = "")
+    public function filesRemoteAdd($external_id, $external_url, $title, $filetype = "")
     {
-        //TODO Пересмотреть метод
-        return self::sendGetRequest("files.remote.add", array("token" => $this->token, "external_id" => $external_id, "external_url" => $external_url, "title" => $title, "file_type" => $filetype, "indexable_file_contents" => $indexable_file_contents, "preview_image" => $preview_image));
+        //TODO дописать загрузку файлов для $preview_img
+        return self::sendGetRequest("files.remote.add", array("token" => $this->token, "external_id" => $external_id, "external_url" => $external_url, "title" => $title, "file_type" => $filetype));
     }
 
     /**
@@ -1609,7 +1607,7 @@ class slackApi
      */
     public function usergroupsUpdate($usergroup, $channels = "", $description = "", $name = "", $handle = "", $include_count = false)
     {
-        return self::sendPostRequest("channels.create", array("token" => $this->token, "usergroup" => $usergroup, "channels" => $channels, "description" => $description, "name" => $name, "handle" => $handle, "include_count" => $include_count));
+        return self::sendPostRequest("usergroups.update", array("token" => $this->token, "usergroup" => $usergroup, "channels" => $channels, "description" => $description, "name" => $name, "handle" => $handle, "include_count" => $include_count));
     }
 
     /*usergroups.users*/
